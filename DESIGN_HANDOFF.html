@@ -1,0 +1,1429 @@
+
+<title>LifePROAssist.AI Handoff</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yantramanav:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --c-primary: #005071;
+    --c-primary-light: #0099CC;
+    --c-dark: #0d1f27;
+    --c-muted: #5e7f8f;
+    --c-bg: #f7f9fb;
+    --c-surface: #ffffff;
+    --c-border: rgba(0,80,113,0.12);
+    --c-border-strong: rgba(0,80,113,0.2);
+    --c-overlay: rgba(0,80,113,0.05);
+    --c-text: #0d1f27;
+    --c-text-muted: rgba(13,31,39,0.6);
+    --c-text-subtle: rgba(13,31,39,0.4);
+    --c-code-bg: rgba(0,80,113,0.06);
+    --c-tag-bg: rgba(0,80,113,0.08);
+    --nav-w: 232px;
+    --content-max: 860px;
+    --radius: 10px;
+    --shadow-card: 0 1px 3px rgba(0,80,113,0.08), 0 4px 16px rgba(0,80,113,0.06);
+    --shadow-pill: 0 4px 12px rgba(0,80,113,0.28);
+    --gradient-brand: linear-gradient(155deg,#005071,#0099CC);
+    --gradient-purple: linear-gradient(135deg,#7c3aed,#a855f7);
+    --gradient-blue: linear-gradient(135deg,#0284c7,#38bdf8);
+    --gradient-amber: linear-gradient(135deg,#b45309,#f59e0b);
+    --gradient-green: linear-gradient(135deg,#059669,#34d399);
+    --gradient-rose: linear-gradient(135deg,#be123c,#fb7185);
+    --gradient-cyan: linear-gradient(135deg,#0891b2,#22d3ee);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --c-bg: #0a1820;
+      --c-surface: #0f2330;
+      --c-border: rgba(0,153,204,0.14);
+      --c-border-strong: rgba(0,153,204,0.26);
+      --c-overlay: rgba(0,153,204,0.07);
+      --c-text: #d8e8ee;
+      --c-text-muted: rgba(216,232,238,0.6);
+      --c-text-subtle: rgba(216,232,238,0.35);
+      --c-code-bg: rgba(0,153,204,0.1);
+      --c-tag-bg: rgba(0,153,204,0.12);
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.22);
+    }
+  }
+  :root[data-theme="dark"] {
+    --c-bg: #0a1820;
+    --c-surface: #0f2330;
+    --c-border: rgba(0,153,204,0.14);
+    --c-border-strong: rgba(0,153,204,0.26);
+    --c-overlay: rgba(0,153,204,0.07);
+    --c-text: #d8e8ee;
+    --c-text-muted: rgba(216,232,238,0.6);
+    --c-text-subtle: rgba(216,232,238,0.35);
+    --c-code-bg: rgba(0,153,204,0.1);
+    --c-tag-bg: rgba(0,153,204,0.12);
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.22);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { font-size: 15px; }
+  body {
+    margin: 0;
+    font-family: 'Yantramanav', system-ui, sans-serif;
+    background: var(--c-bg);
+    color: var(--c-text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Layout ---- */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ---- Sidebar ---- */
+  .sidebar {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--c-surface);
+    border-right: 1px solid var(--c-border);
+    padding: 28px 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .sidebar-logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--c-border);
+    margin-bottom: 16px;
+  }
+  .sidebar-logo .product {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-primary);
+    letter-spacing: 0.02em;
+  }
+  .sidebar-logo .label {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--c-text-muted);
+    margin-top: 2px;
+  }
+  .nav-section {
+    padding: 0 12px 8px;
+  }
+  .nav-section-label {
+    font-size: 9.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--c-text-subtle);
+    padding: 10px 8px 4px;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--c-text-muted);
+    text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+    cursor: pointer;
+    line-height: 1.3;
+  }
+  .nav-link:hover { background: var(--c-overlay); color: var(--c-primary); }
+  .nav-link.active { background: var(--c-tag-bg); color: var(--c-primary); font-weight: 500; }
+  .nav-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .theme-toggle {
+    margin: auto 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--c-border);
+    font-size: 12px;
+    color: var(--c-text-muted);
+    cursor: pointer;
+    background: transparent;
+    font-family: inherit;
+    transition: background 0.12s;
+  }
+  .theme-toggle:hover { background: var(--c-overlay); }
+
+  /* ---- Main ---- */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 0 40px 80px;
+  }
+
+  /* ---- Page header ---- */
+  .page-hero {
+    padding: 48px 0 36px;
+    border-bottom: 1px solid var(--c-border);
+    margin-bottom: 48px;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--c-primary);
+    margin-bottom: 10px;
+  }
+  .hero-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0 0 8px;
+    text-wrap: balance;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+  }
+  .hero-title span {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-meta {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    font-size: 13px; color: var(--c-text-muted); margin-top: 16px;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+  .hero-meta .dot { width:4px;height:4px;background:var(--c-muted);border-radius:50%;opacity:0.5; }
+
+  /* ---- Section ---- */
+  .section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-header {
+    display: flex; align-items: baseline; gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--c-border);
+    margin-bottom: 28px;
+  }
+  .section-num {
+    font-size: 11px; font-weight: 700;
+    color: var(--c-primary); opacity: 0.5;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+  h2 {
+    font-size: 20px; font-weight: 700;
+    color: var(--c-text); margin: 0;
+    letter-spacing: -0.2px;
+  }
+  h3 {
+    font-size: 13px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--c-text-muted); margin: 28px 0 14px;
+  }
+
+  /* ---- Token Swatches ---- */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .swatch {
+    border-radius: var(--radius);
+    border: 1px solid var(--c-border);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+  .swatch-color {
+    height: 64px;
+  }
+  .swatch-info {
+    padding: 10px 12px;
+    background: var(--c-surface);
+  }
+  .swatch-name {
+    font-size: 12px; font-weight: 500; color: var(--c-text);
+  }
+  .swatch-value {
+    font-size: 11px; color: var(--c-text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
+
+  .gradient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .grad-card {
+    border-radius: var(--radius);
+    border: 1px solid var(--c-border);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+  .grad-bar { height: 52px; }
+  .grad-info {
+    padding: 10px 12px;
+    background: var(--c-surface);
+  }
+  .grad-name { font-size: 12px; font-weight: 500; color: var(--c-text); }
+  .grad-value { font-size: 10.5px; color: var(--c-text-muted); font-family:'JetBrains Mono',monospace; margin-top:2px; word-break: break-all; }
+  .grad-usage { font-size: 11px; color: var(--c-text-subtle); margin-top: 4px; }
+
+  /* ---- Type Scale ---- */
+  .type-row {
+    display: flex; align-items: baseline; gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-meta {
+    width: 200px; flex-shrink: 0;
+  }
+  .type-label { font-size: 11px; font-weight: 500; color: var(--c-text-muted); }
+  .type-spec { font-size: 10.5px; color: var(--c-text-subtle); font-family:'JetBrains Mono',monospace; margin-top:3px; }
+  .type-sample { flex: 1; color: var(--c-text); }
+
+  /* ---- Spec Table ---- */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .spec-table th {
+    text-align: left;
+    font-size: 10.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--c-text-muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--c-border);
+    background: var(--c-overlay);
+  }
+  .spec-table th:first-child { border-radius: 6px 0 0 0; }
+  .spec-table th:last-child { border-radius: 0 6px 0 0; }
+  .spec-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--c-border);
+    vertical-align: top;
+    color: var(--c-text);
+    line-height: 1.5;
+  }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .spec-table td:first-child { font-weight: 500; color: var(--c-text-muted); font-size: 12px; white-space: nowrap; }
+  .spec-table code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: var(--c-code-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--c-primary);
+  }
+
+  /* ---- Frame card ---- */
+  .frame-card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 32px;
+  }
+  .frame-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--c-border);
+    background: var(--c-overlay);
+  }
+  .frame-title { font-size: 15px; font-weight: 700; color: var(--c-text); }
+  .frame-node {
+    font-size: 11px; font-family:'JetBrains Mono',monospace;
+    color: var(--c-text-muted);
+    background: var(--c-code-bg);
+    padding: 3px 8px; border-radius: 5px;
+  }
+  .frame-canvas {
+    font-size: 11px; color: var(--c-text-subtle);
+  }
+  .frame-body { padding: 20px; }
+
+  /* ---- Component Pills ---- */
+  .component-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+  }
+  .comp-pill {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 14px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+  .comp-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .comp-name { font-size: 13px; font-weight: 500; color: var(--c-text); }
+  .comp-frames { font-size: 11px; color: var(--c-text-muted); margin-top: 1px; }
+  .comp-note { font-size: 11px; color: var(--c-text-subtle); margin-top: 3px; }
+
+  /* ---- Interaction cards ---- */
+  .interaction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .interaction-card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: var(--shadow-card);
+  }
+  .interaction-title {
+    font-size: 13px; font-weight: 700; color: var(--c-text);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .interaction-title .badge {
+    font-size: 9.5px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.1em; padding: 2px 6px; border-radius: 4px;
+    background: var(--c-tag-bg); color: var(--c-primary);
+  }
+  .state-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--c-border);
+    font-size: 12.5px;
+  }
+  .state-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .state-label {
+    font-size: 11px; font-weight: 500;
+    padding: 2px 7px; border-radius: 4px;
+    background: var(--c-tag-bg); color: var(--c-primary);
+    flex-shrink: 0; line-height: 1.5;
+  }
+  .state-value { color: var(--c-text-muted); line-height: 1.5; font-family:'JetBrains Mono',monospace; font-size: 11.5px; }
+
+  /* ---- Divider ---- */
+  .divider { border: none; border-top: 1px solid var(--c-border); margin: 24px 0; }
+
+  /* ---- Action row preview ---- */
+  .action-row-demo {
+    display: flex; gap: 8px; padding: 12px 0;
+  }
+  .action-btn {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
+    color: var(--c-text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .action-btn:hover { background: var(--c-tag-bg); color: var(--c-primary); }
+
+  /* ---- Live previews ---- */
+  .preview-strip {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    padding: 16px;
+    background: var(--c-overlay);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .artifact-pill-preview {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0 16px;
+    height: 40px;
+    border-radius: 20px;
+    background: var(--gradient-brand);
+    box-shadow: var(--shadow-pill);
+    color: white;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Yantramanav', sans-serif;
+  }
+  .gradient-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: white;
+    font-size: 12px; font-weight: 500;
+    font-family: 'Yantramanav', sans-serif;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .badge-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .user-bubble {
+    display: inline-block;
+    padding: 8px 12px;
+    background: var(--c-primary);
+    color: white;
+    font-size: 14px;
+    border-radius: 12px 12px 4px 12px;
+    font-family: 'Yantramanav', sans-serif;
+    font-weight: 400;
+  }
+  .loading-card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 14px 12px 10px 4px;
+    padding: 14px 16px;
+    max-width: 260px;
+  }
+  .dots {
+    display: inline-flex; gap: 4px; align-items: center;
+  }
+  .dot-anim {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(0,80,113,0.7);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .dot-anim:nth-child(2) { animation-delay: 0.2s; }
+  .dot-anim:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+  .progress-track {
+    height: 4px; background: rgba(94,127,143,0.1); border-radius: 4px; overflow: hidden;
+    margin: 8px 0 10px;
+  }
+  .progress-fill {
+    height: 100%; width: 33%; background: var(--c-primary); border-radius: 4px;
+    animation: progress 2s ease-in-out infinite;
+  }
+  @keyframes progress { 0%{width:10%} 60%{width:75%} 100%{width:10%} }
+  .skeleton { height: 8px; border-radius: 4px; background: rgba(94,127,143,0.12); margin-top: 6px; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 800px) {
+    .sidebar { display: none; }
+    .main { padding: 0 20px 60px; }
+    .swatch-grid { grid-template-columns: repeat(2, 1fr); }
+    .gradient-grid { grid-template-columns: repeat(2, 1fr); }
+    .interaction-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---- Misc ---- */
+  .tag {
+    display: inline-block;
+    font-size: 10.5px; font-weight: 500;
+    padding: 2px 7px; border-radius: 4px;
+    background: var(--c-tag-bg); color: var(--c-primary);
+    margin: 2px;
+  }
+  .tag.purple { background: rgba(124,58,237,0.1); color: #7c3aed; }
+  .tag.blue { background: rgba(2,132,199,0.1); color: #0284c7; }
+  .tag.amber { background: rgba(180,83,9,0.1); color: #b45309; }
+  .tag.green { background: rgba(5,150,105,0.1); color: #059669; }
+  .tag.rose { background: rgba(190,18,60,0.1); color: #be123c; }
+  .tag.cyan { background: rgba(8,145,178,0.1); color: #0891b2; }
+  .tag.gray { background: var(--c-overlay); color: var(--c-text-muted); }
+
+  .inline-swatch {
+    display: inline-block;
+    width: 12px; height: 12px; border-radius: 3px;
+    vertical-align: middle; margin-right: 5px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+
+  summary { cursor: pointer; user-select: none; }
+  details[open] summary { margin-bottom: 12px; }
+
+  /* Print / export hint */
+  .print-hint {
+    font-size: 11px; color: var(--c-text-subtle);
+    padding: 0 0 0 4px;
+  }
+</style>
+
+<div class="layout">
+
+  <!-- Sidebar nav -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="product">LifePROAssist.AI</div>
+      <div class="label">Design Handoff · 2026-09-17</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Foundations</div>
+      <a class="nav-link" href="#tokens"><span class="nav-dot" style="background:var(--c-primary)"></span>Design Tokens</a>
+      <a class="nav-link" href="#typography"><span class="nav-dot" style="background:#5e7f8f"></span>Typography</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Frames</div>
+      <a class="nav-link" href="#f01"><span class="nav-dot" style="background:var(--gradient-brand);background:var(--c-primary)"></span>01 · Welcome</a>
+      <a class="nav-link" href="#f02"><span class="nav-dot" style="background:#7c3aed"></span>02 · Action Menu</a>
+      <a class="nav-link" href="#f03"><span class="nav-dot" style="background:#0284c7"></span>03 · AI Loading</a>
+      <a class="nav-link" href="#f04"><span class="nav-dot" style="background:#059669"></span>04 · AI Response</a>
+      <a class="nav-link" href="#f05"><span class="nav-dot" style="background:#0891b2"></span>05 · Sidebar</a>
+      <a class="nav-link" href="#mobile"><span class="nav-dot" style="background:#b45309"></span>Mobile 390</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Reference</div>
+      <a class="nav-link" href="#components"><span class="nav-dot" style="background:#5e7f8f"></span>Components</a>
+      <a class="nav-link" href="#interactions"><span class="nav-dot" style="background:#5e7f8f"></span>Interactions</a>
+    </div>
+
+    <button class="theme-toggle" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'">
+      ◐ Toggle theme
+    </button>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Hero -->
+    <div class="page-hero">
+      <div class="hero-eyebrow">Design Handoff Document</div>
+      <h1 class="hero-title"><span>LifePROAssist</span>.AI</h1>
+      <p style="font-size:14px;color:var(--c-text-muted);margin:0 0 0;max-width:560px;font-weight:300;">
+        AI chat assistant for life insurance professionals. Complete specs for all 6 frames — desktop and mobile.
+      </p>
+      <div class="hero-meta">
+        <span>Figma · <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--c-code-bg);padding:2px 6px;border-radius:4px;color:var(--c-primary)">8ZaovNEs0AMxJDUsGuknzB</code></span>
+        <span class="dot"></span>
+        <span>6 frames</span>
+        <span class="dot"></span>
+        <span>Desktop 1366 × 719 · Mobile 390 × 844</span>
+        <span class="dot"></span>
+        <span>Author: Karthik G</span>
+      </div>
+    </div>
+
+    <!-- ── 1. DESIGN TOKENS ── -->
+    <section class="section" id="tokens">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Design Tokens</h2>
+      </div>
+
+      <h3>Core Colors</h3>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#005071"></div>
+          <div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-value">#005071</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0099CC"></div>
+          <div class="swatch-info"><div class="swatch-name">Primary Light</div><div class="swatch-value">#0099CC</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0d1f27"></div>
+          <div class="swatch-info"><div class="swatch-name">Dark</div><div class="swatch-value">#0d1f27</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#5e7f8f"></div>
+          <div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-value">#5e7f8f</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#f7f9fb;border:1px solid rgba(0,80,113,0.1)"></div>
+          <div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-value">#f7f9fb</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#ffffff;border:1px solid rgba(0,80,113,0.1)"></div>
+          <div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-value">#ffffff</div></div>
+        </div>
+      </div>
+
+      <h3>Opacity Variants</h3>
+      <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+        <thead>
+          <tr><th>Usage</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dark text — body</td><td><code>rgba(13,31,39, 0.8)</code></td></tr>
+          <tr><td>Dark text — muted</td><td><code>rgba(13,31,39, 0.6)</code></td></tr>
+          <tr><td>Dark text — subtle</td><td><code>rgba(13,31,39, 0.4)</code></td></tr>
+          <tr><td>Muted text — light</td><td><code>rgba(94,127,143, 0.7)</code></td></tr>
+          <tr><td>Border — default</td><td><code>rgba(0,80,113, 0.12)</code></td></tr>
+          <tr><td>Border — hover/strong</td><td><code>rgba(0,80,113, 0.20)</code></td></tr>
+          <tr><td>Surface — overlay tint</td><td><code>rgba(0,80,113, 0.05)</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Semantic Gradients</h3>
+      <div class="gradient-grid">
+        <div class="grad-card">
+          <div class="grad-bar" style="background:linear-gradient(155deg,#005071,#0099CC)"></div>
+          <div class="grad-info"><div class="grad-name">Brand</div><div class="grad-value">155deg #005071 → #0099CC</div><div class="grad-usage">Artifact pill, AI avatar</div></div>
+        </div>
+        <div class="grad-card">
+          <div class="grad-bar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"></div>
+          <div class="grad-info"><div class="grad-name">Purple</div><div class="grad-value">135deg #7c3aed → #a855f7</div><div class="grad-usage">Generate BRD, ProductConfig.AI</div></div>
+        </div>
+        <div class="grad-card">
+          <div class="grad-bar" style="background:linear-gradient(135deg,#0284c7,#38bdf8)"></div>
+          <div class="grad-info"><div class="grad-name">Blue</div><div class="grad-value">135deg #0284c7 → #38bdf8</div><div class="grad-usage">Generate BDD, PDDAssist.AI</div></div>
+        </div>
+        <div class="grad-card">
+          <div class="grad-bar" style="background:linear-gradient(135deg,#b45309,#f59e0b)"></div>
+          <div class="grad-info"><div class="grad-name">Amber</div><div class="grad-value">135deg #b45309 → #f59e0b</div><div class="grad-usage">Generate Mods</div></div>
+        </div>
+        <div class="grad-card">
+          <div class="grad-bar" style="background:linear-gradient(135deg,#059669,#34d399)"></div>
+          <div class="grad-info"><div class="grad-name">Green</div><div class="grad-value">135deg #059669 → #34d399</div><div class="grad-usage">Generate Test Cases, SAA</div></div>
+        </div>
+        <div class="grad-card">
+          <div class="grad-bar" style="background:linear-gradient(135deg,#be123c,#fb7185)"></div>
+          <div class="grad-info"><div class="grad-name">Rose</div><div class="grad-value">135deg #be123c → #fb7185</div><div class="grad-usage">Rate Agent</div></div>
+        </div>
+        <div class="grad-card">
+          <div class="grad-bar" style="background:linear-gradient(135deg,#0891b2,#22d3ee)"></div>
+          <div class="grad-info"><div class="grad-name">Cyan</div><div class="grad-value">135deg #0891b2 → #22d3ee</div><div class="grad-usage">Pixora.AI</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 2. TYPOGRAPHY ── -->
+    <section class="section" id="typography">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Typography</h2>
+      </div>
+      <p style="font-size:13px;color:var(--c-text-muted);margin:0 0 24px;">Font family: <strong>Yantramanav</strong> — weights 700 / 500 / 400 / 300</p>
+
+      <div style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+        <div class="type-row" style="padding:16px 16px;">
+          <div class="type-meta">
+            <div class="type-label">Hero Heading</div>
+            <div class="type-spec">38.4px · Bold · −0.6px</div>
+          </div>
+          <div class="type-sample" style="font-size:38px;font-weight:700;letter-spacing:-0.6px;line-height:1;">Welcome</div>
+        </div>
+        <div class="type-row" style="padding:12px 16px;">
+          <div class="type-meta">
+            <div class="type-label">Section Label</div>
+            <div class="type-spec">16px · Bold</div>
+          </div>
+          <div class="type-sample" style="font-size:16px;font-weight:700;">LifePRO Suite</div>
+        </div>
+        <div class="type-row" style="padding:12px 16px;">
+          <div class="type-meta">
+            <div class="type-label">Card Title</div>
+            <div class="type-spec">14px · Bold</div>
+          </div>
+          <div class="type-sample" style="font-size:14px;font-weight:700;">ProductConfig.AI</div>
+        </div>
+        <div class="type-row" style="padding:12px 16px;">
+          <div class="type-meta">
+            <div class="type-label">Body Regular</div>
+            <div class="type-spec">14px · Regular</div>
+          </div>
+          <div class="type-sample" style="font-size:14px;font-weight:400;">Generate BRD for the PAR policy module</div>
+        </div>
+        <div class="type-row" style="padding:12px 16px;">
+          <div class="type-meta">
+            <div class="type-label">Body Light</div>
+            <div class="type-spec">14px · Light (300)</div>
+          </div>
+          <div class="type-sample" style="font-size:14px;font-weight:300;color:rgba(13,31,39,0.8);">AI response text — intelligent product template configuration for your workflow.</div>
+        </div>
+        <div class="type-row" style="padding:12px 16px;">
+          <div class="type-meta">
+            <div class="type-label">Card Subtitle</div>
+            <div class="type-spec">12px · Light</div>
+          </div>
+          <div class="type-sample" style="font-size:12px;font-weight:300;color:#5e7f8f;">Deep analytics and data exploration</div>
+        </div>
+        <div class="type-row" style="padding:12px 16px;">
+          <div class="type-meta">
+            <div class="type-label">Overline</div>
+            <div class="type-spec">10.4px · Medium · +0.832px</div>
+          </div>
+          <div class="type-sample" style="font-size:10.4px;font-weight:500;text-transform:uppercase;letter-spacing:0.832px;color:rgba(13,31,39,0.5);">Switch Product</div>
+        </div>
+        <div class="type-row" style="padding:12px 16px;">
+          <div class="type-meta">
+            <div class="type-label">Caption / Micro</div>
+            <div class="type-spec">11px · Light</div>
+          </div>
+          <div class="type-sample" style="font-size:11px;font-weight:300;color:rgba(94,127,143,0.7);">Gathering relevant data sources…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FRAME 01 ── -->
+    <section class="section" id="f01">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>Frame 01 — Welcome Screen</h2>
+      </div>
+
+      <div class="frame-card">
+        <div class="frame-card-header">
+          <div>
+            <div class="frame-title">Welcome Screen</div>
+            <div class="frame-canvas" style="margin-top:3px;">Desktop · 1366 × 719 px</div>
+          </div>
+          <div class="frame-node">node: 2:7</div>
+        </div>
+        <div class="frame-body">
+
+          <h3>Header Bar</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Background</td><td>#ffffff</td></tr>
+              <tr><td>Height</td><td>52 px</td></tr>
+              <tr><td>Padding</td><td><code>px-16 py-12</code></td></tr>
+              <tr><td>Logo</td><td>Bold 18 px · <code>#005071</code></td></tr>
+              <tr><td>Zoom control pill</td><td>Border <code>rgba(0,80,113,0.12)</code> · 8 px radius · 32 px height</td></tr>
+              <tr><td>Icon buttons</td><td>32 × 32 px · 6 px padding · <code>rgba(13,31,39,0.7)</code></td></tr>
+              <tr><td>User avatar</td><td>28 px circle · <code>#005071</code> bg · "KG" 9 px Bold white · 14 px radius</td></tr>
+              <tr><td>Username</td><td>14 px Regular · <code>#0d1f27</code></td></tr>
+            </tbody>
+          </table>
+
+          <h3>Hero Section</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Title</td><td>"Welcome to LifePROAssist.AI" · 38.4 px Bold · tracking −0.6 px</td></tr>
+              <tr><td>Subtitle</td><td>14 px Light · <code>#5e7f8f</code> · centered</td></tr>
+              <tr><td>Container width</td><td>768 px · centered</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Prompt Card Grid</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Grid</td><td>2 col × 2 row · 10 px gap</td></tr>
+              <tr><td>Card size</td><td>379 × 50 px</td></tr>
+              <tr><td>Background</td><td>#ffffff</td></tr>
+              <tr><td>Border</td><td><code>1px solid rgba(0,80,113,0.12)</code></td></tr>
+              <tr><td>Border radius</td><td>8 px</td></tr>
+              <tr><td>Icon badge</td><td>32 × 32 px · 8 px radius · gradient bg</td></tr>
+              <tr><td>Text</td><td>14 px Regular · <code>rgba(13,31,39,0.8)</code></td></tr>
+              <tr><td>Chevron</td><td>14 px · <code>rgba(13,31,39,0.4)</code></td></tr>
+            </tbody>
+          </table>
+
+          <h3>Chat Input</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Width × Height</td><td>768 × 97 px</td></tr>
+              <tr><td>Background</td><td>#ffffff</td></tr>
+              <tr><td>Border</td><td><code>1px solid rgba(0,80,113,0.12)</code></td></tr>
+              <tr><td>Border radius</td><td>12 px</td></tr>
+              <tr><td>Padding</td><td><code>px-16 pt-12 pb-8</code></td></tr>
+              <tr><td>Placeholder</td><td>14 px Light · <code>rgba(13,31,39,0.4)</code></td></tr>
+            </tbody>
+          </table>
+
+          <h3>Chat Toolbar</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Button</th><th>Icon</th><th>Active State</th></tr></thead>
+            <tbody>
+              <tr><td>Attach</td><td>paperclip</td><td>—</td></tr>
+              <tr><td>Browse Prompts</td><td>folder</td><td>—</td></tr>
+              <tr><td>Deep Thinking</td><td>brain</td><td>bg <code>#e5eef2</code> + <code>#005071</code> dot indicator</td></tr>
+              <tr><td>Insights</td><td>chart-column</td><td>—</td></tr>
+              <tr><td>Clear</td><td>trash-2</td><td>—</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px;color:var(--c-text-muted);margin:8px 0 0;">All items: 12 px Regular · icon 14 px · gap 6 px · color <code style="font-family:monospace;background:var(--c-code-bg);padding:1px 5px;border-radius:4px;">rgba(13,31,39,0.6)</code></p>
+
+          <h3>Artifact Pill</h3>
+          <div class="preview-strip">
+            <div class="artifact-pill-preview">🚀 Artifact</div>
+          </div>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Size</td><td>104.5 × 48 px</td></tr>
+              <tr><td>Background</td><td><code>linear-gradient(155deg, #005071, #0099CC)</code></td></tr>
+              <tr><td>Border radius</td><td>24 px</td></tr>
+              <tr><td>Icon</td><td>Rocket · 16 px · white</td></tr>
+              <tr><td>Label</td><td>"Artifact" · 13 px Bold · white</td></tr>
+              <tr><td>Shadow (default)</td><td><code>0px 4px 12px rgba(0,80,113,0.35)</code></td></tr>
+              <tr><td>Position</td><td><code>position: absolute; bottom: 80px; right: 24px</code></td></tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FRAME 02 ── -->
+    <section class="section" id="f02">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Frame 02 — Artifact Action Menu</h2>
+      </div>
+      <div class="frame-card">
+        <div class="frame-card-header">
+          <div>
+            <div class="frame-title">Welcome + Action Menu Expanded</div>
+            <div class="frame-canvas" style="margin-top:3px;">Desktop · 1366 × 719 px</div>
+          </div>
+          <div class="frame-node">node: 2:169</div>
+        </div>
+        <div class="frame-body">
+          <p style="font-size:13px;color:var(--c-text-muted);margin:0 0 20px;">Extends Frame 01. Shows the Artifact pill in its expanded state with 4 quick-action buttons floating above it.</p>
+
+          <h3>Artifact Pill — Expanded</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Shadow (expanded)</td><td><code>0px 8px 24px rgba(0,80,113,0.5), 0px 2px 6px rgba(0,80,113,0.22)</code></td></tr>
+            </tbody>
+          </table>
+
+          <h3>Action Menu Items</h3>
+          <div class="preview-strip">
+            <div class="gradient-badge" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"><div class="badge-icon">📄</div>Generate BRD</div>
+            <div class="gradient-badge" style="background:linear-gradient(135deg,#0284c7,#38bdf8)"><div class="badge-icon">📋</div>Generate BDD</div>
+            <div class="gradient-badge" style="background:linear-gradient(135deg,#b45309,#f59e0b)"><div class="badge-icon">⚙️</div>Generate Mods</div>
+            <div class="gradient-badge" style="background:linear-gradient(135deg,#059669,#34d399)"><div class="badge-icon">✅</div>Test Cases</div>
+          </div>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Action</th><th>Gradient</th><th>Icon size</th></tr></thead>
+            <tbody>
+              <tr><td>Generate BRD</td><td><code>135deg #7c3aed → #a855f7</code></td><td>44 px circle</td></tr>
+              <tr><td>Generate BDD</td><td><code>135deg #0284c7 → #38bdf8</code></td><td>44 px circle</td></tr>
+              <tr><td>Generate Mods</td><td><code>135deg #b45309 → #f59e0b</code></td><td>44 px circle</td></tr>
+              <tr><td>Generate Test Cases</td><td><code>135deg #059669 → #34d399</code></td><td>44 px circle</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px;color:var(--c-text-muted);margin:10px 0 0;">
+            Each item: white label pill (shadow <code style="font-size:11px;font-family:monospace;background:var(--c-code-bg);padding:1px 5px;border-radius:4px;">0px 2px 8px rgba(0,0,0,0.12)</code> · 10 px radius · px-12 py-6 · 13 px Medium) ← 8 px gap → gradient circle (44 px · 22 px radius · white icon 16 px)
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FRAME 03 ── -->
+    <section class="section" id="f03">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Frame 03 — AI Thinking / Loading</h2>
+      </div>
+      <div class="frame-card">
+        <div class="frame-card-header">
+          <div>
+            <div class="frame-title">AI Thinking State</div>
+            <div class="frame-canvas" style="margin-top:3px;">Desktop · 1366 × 719 px</div>
+          </div>
+          <div class="frame-node">node: 2:362</div>
+        </div>
+        <div class="frame-body">
+
+          <h3>Live Preview</h3>
+          <div class="preview-strip" style="flex-direction:column;align-items:flex-start;gap:12px;">
+            <div style="align-self:flex-end;display:flex;align-items:center;gap:8px;">
+              <div class="user-bubble">Generate BRD</div>
+              <div style="width:28px;height:28px;border-radius:50%;background:#005071;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;">KG</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#005071,#0088b3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">✦</div>
+              <div class="loading-card">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                  <span style="font-size:20px;">🤖</span>
+                  <span style="font-size:14px;font-weight:500;color:#005071;">Thinking</span>
+                  <div class="dots"><div class="dot-anim"></div><div class="dot-anim"></div><div class="dot-anim"></div></div>
+                </div>
+                <div style="font-size:11px;font-weight:300;color:rgba(94,127,143,0.7);">Gathering relevant data sources…</div>
+                <div class="progress-track"><div class="progress-fill"></div></div>
+                <div class="skeleton" style="width:100%"></div>
+                <div class="skeleton" style="width:70%;margin-top:6px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <h3>User Message Bubble</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Background</td><td><code>#005071</code></td></tr>
+              <tr><td>Text</td><td>14 px Regular · white</td></tr>
+              <tr><td>Border radius</td><td>12 / 12 / 4 / 12 px (tl / tr / br / bl)</td></tr>
+              <tr><td>Padding</td><td><code>px-12 py-8</code></td></tr>
+              <tr><td>Max-width</td><td>320 px</td></tr>
+            </tbody>
+          </table>
+
+          <h3>AI Loading Card</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Size</td><td>288 × 120.5 px</td></tr>
+              <tr><td>Background</td><td>#ffffff</td></tr>
+              <tr><td>Border</td><td><code>1px solid rgba(0,80,113,0.12)</code></td></tr>
+              <tr><td>Border radius</td><td>16 / 14 / 12 / 4 px (tl / tr / br / bl)</td></tr>
+              <tr><td>Padding</td><td><code>px-16 py-12</code></td></tr>
+              <tr><td>Animated dots</td><td>3 × 6 px · <code>rgba(0,80,113,0.7)</code> · staggered pulse</td></tr>
+              <tr><td>Sub-label</td><td>11 px Light · <code>rgba(94,127,143,0.7)</code></td></tr>
+              <tr><td>Progress track</td><td>4 px tall · <code>rgba(94,127,143,0.1)</code> bg · 4 px radius</td></tr>
+              <tr><td>Progress fill</td><td><code>#005071</code> · animated left-to-right</td></tr>
+              <tr><td>Skeleton lines</td><td>2 × 8 px tall · <code>rgba(94,127,143,0.12)</code> · 4 px radius · 6 px gap</td></tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FRAME 04 ── -->
+    <section class="section" id="f04">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>Frame 04 — AI Response</h2>
+      </div>
+      <div class="frame-card">
+        <div class="frame-card-header">
+          <div>
+            <div class="frame-title">AI Response — JIRA Ticket List</div>
+            <div class="frame-canvas" style="margin-top:3px;">Desktop · 1366 × 719 px</div>
+          </div>
+          <div class="frame-node">node: 2:528</div>
+        </div>
+        <div class="frame-body">
+
+          <h3>AI Response Bubble</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Width</td><td>563 px</td></tr>
+              <tr><td>Background</td><td>#ffffff</td></tr>
+              <tr><td>Border</td><td><code>1px solid rgba(0,80,113,0.12)</code></td></tr>
+              <tr><td>Border radius</td><td>12 / 12 / 4 / 12 px (tl / tr / br / bl)</td></tr>
+              <tr><td>Padding</td><td><code>px-16 py-12</code></td></tr>
+              <tr><td>Intro sentence</td><td>14 px Regular · <code>#005071</code></td></tr>
+              <tr><td>Body text</td><td>14 px Light · <code>rgba(13,31,39,0.8)</code></td></tr>
+              <tr><td>Bullet gap</td><td>8 px between items</td></tr>
+            </tbody>
+          </table>
+
+          <h3>JIRA Ticket Content</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Ticket</th><th>Status</th><th>Summary</th></tr></thead>
+            <tbody>
+              <tr><td>LIFE-4821</td><td><span class="tag blue">In Progress</span></td><td>Recalculate dividend accumulation for PAR policies</td></tr>
+              <tr><td>LIFE-4805</td><td><span class="tag amber">In Review</span></td><td>Add paid-up additions (PUA) option</td></tr>
+              <tr><td>LIFE-4790</td><td><span class="tag green">Done</span></td><td>Fix reversionary bonus rounding</td></tr>
+              <tr><td>LIFE-4772</td><td><span class="tag rose">Blocked</span></td><td>Cash dividend option not honoring election</td></tr>
+              <tr><td>LIFE-4758</td><td><span class="tag gray">To Do</span></td><td>Expose PAR dividend scale as configurable rate table</td></tr>
+            </tbody>
+          </table>
+
+          <h3>AI Action Row</h3>
+          <div class="action-row-demo">
+            <div class="action-btn" title="Thumbs up">👍</div>
+            <div class="action-btn" title="Thumbs down">👎</div>
+            <div class="action-btn" title="Copy">⎘</div>
+            <div class="action-btn" title="Download">↓</div>
+          </div>
+          <p style="font-size:12px;color:var(--c-text-muted);margin:0;">4 icon buttons · 26 × 26 px container · 6 px padding · hover: <code style="font-size:11px;font-family:monospace;background:var(--c-code-bg);padding:1px 5px;border-radius:4px;">rgba(0,80,113,0.08)</code> bg</p>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FRAME 05 ── -->
+    <section class="section" id="f05">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Frame 05 — Product Navigation Sidebar</h2>
+      </div>
+      <div class="frame-card">
+        <div class="frame-card-header">
+          <div>
+            <div class="frame-title">Product Navigation Sidebar Overlay</div>
+            <div class="frame-canvas" style="margin-top:3px;">Desktop · 1366 × 719 px</div>
+          </div>
+          <div class="frame-node">node: 2:686</div>
+        </div>
+        <div class="frame-body">
+
+          <h3>Overlay</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Background</td><td><code>rgba(13,31,39, 0.1)</code></td></tr>
+              <tr><td>Backdrop blur</td><td><code>blur(1px)</code></td></tr>
+              <tr><td>Coverage</td><td>Full viewport behind sidebar</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Sidebar Panel</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Size</td><td>320 × 658 px</td></tr>
+              <tr><td>Background</td><td>#ffffff</td></tr>
+              <tr><td>Border-left</td><td><code>1px solid rgba(0,80,113,0.12)</code></td></tr>
+              <tr><td>Box shadow</td><td><code>0px 25px 25px rgba(0,0,0,0.25)</code></td></tr>
+              <tr><td>Position</td><td>Right edge of viewport</td></tr>
+              <tr><td>Padding</td><td><code>px-16 py-20</code></td></tr>
+            </tbody>
+          </table>
+
+          <h3>Navigation Cards</h3>
+          <p style="font-size:12px;color:var(--c-text-muted);margin:0 0 14px;">Container: 287 px wide · 16 px gap · Each card: border <code style="font-family:monospace;font-size:11px;">rgba(0,80,113,0.12)</code> · 12 px radius · px-16 py-14 · Icon badge: 40×40 px · 12 px radius · shadow <code style="font-family:monospace;font-size:11px;">0px 4px 8px rgba(0,0,0,0.15)</code></p>
+
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>#</th><th>Product</th><th>Gradient</th><th>Subtitle</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><span class="tag purple">ProductConfig.AI</span></td><td><code>#7c3aed → #a855f7</code></td><td>Intelligent product template configuration</td></tr>
+              <tr><td>2</td><td><span class="tag blue">PDDAssist.AI</span></td><td><code>#0284c7 → #38bdf8</code></td><td>Deep analytics and data exploration</td></tr>
+              <tr><td>3</td><td><span class="tag green">Smart Agent Assist</span></td><td><code>#059669 → #34d399</code></td><td>Guided workflows for service agents</td></tr>
+              <tr><td>4</td><td><span class="tag rose">Rate Agent</span></td><td><code>#be123c → #fb7185</code></td><td>Automated rate table management &amp; pricing</td></tr>
+              <tr><td>5</td><td><span class="tag cyan">Pixora.AI</span></td><td><code>#0891b2 → #22d3ee</code></td><td>Low-code app orchestration and integration</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Sidebar Footer</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Label</td><td>"View all solutions"</td></tr>
+              <tr><td>Background</td><td><code>rgba(0,80,113,0.05)</code></td></tr>
+              <tr><td>Border</td><td><code>1px solid rgba(0,80,113,0.2)</code></td></tr>
+              <tr><td>Border radius</td><td>12 px</td></tr>
+              <tr><td>Text</td><td>14 px Medium · <code>#005071</code></td></tr>
+              <tr><td>Size</td><td>287 × 44 px</td></tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MOBILE ── -->
+    <section class="section" id="mobile">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>Frame 01 Mobile — 390 px</h2>
+      </div>
+      <div class="frame-card">
+        <div class="frame-card-header">
+          <div>
+            <div class="frame-title">Mobile Welcome Screen</div>
+            <div class="frame-canvas" style="margin-top:3px;">Mobile · 390 × 844 px</div>
+          </div>
+          <div class="frame-node">node: 28:4</div>
+        </div>
+        <div class="frame-body">
+
+          <h3>Mobile Header</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Height</td><td>52 px</td></tr>
+              <tr><td>Padding</td><td><code>px-16 py-12</code></td></tr>
+              <tr><td>Logo</td><td>18 px Bold · <code>#005071</code></td></tr>
+              <tr><td>Avatar</td><td>28 px · <code>#005071</code> bg · "KG" 9 px Bold white · 14 px radius</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Welcome Section</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Heading</td><td>28 px Bold · tracking −0.6 px · centered · full-width</td></tr>
+              <tr><td>Subtitle</td><td>14 px Light · <code>rgba(13,31,39,0.5)</code> · centered</td></tr>
+              <tr><td>Gap below heading</td><td>8 px</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Suggestion Cards</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Width</td><td>100% minus px-16 page padding</td></tr>
+              <tr><td>Padding</td><td>12 px</td></tr>
+              <tr><td>Border</td><td><code>1px solid rgba(0,80,113,0.12)</code></td></tr>
+              <tr><td>Border radius</td><td>10 px</td></tr>
+              <tr><td>Gap between cards</td><td>8 px</td></tr>
+              <tr><td>Icon badge</td><td>32 × 32 px · 8 px radius · gradient bg</td></tr>
+              <tr><td>Text</td><td>13 px Regular · <code>rgba(13,31,39,0.8)</code></td></tr>
+              <tr><td>Chevron</td><td>14 px · <code>rgba(13,31,39,0.4)</code></td></tr>
+            </tbody>
+          </table>
+
+          <h3>Mobile Chat Input</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Padding</td><td><code>px-16 pt-12 pb-8</code></td></tr>
+              <tr><td>Input border radius</td><td>10 px</td></tr>
+              <tr><td>Placeholder</td><td>14 px Light · <code>rgba(13,31,39,0.4)</code></td></tr>
+              <tr><td>Send button</td><td>32 × 32 px circle · <code>#005071</code> 30% opacity · arrow-up icon white</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Mobile Toolbar (icon-only)</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Icon</th><th>Active State</th></tr></thead>
+            <tbody>
+              <tr><td>paperclip</td><td>—</td></tr>
+              <tr><td>folder</td><td>—</td></tr>
+              <tr><td>brain</td><td>bg <code>#e5eef2</code> + <code>#005071</code> dot below icon</td></tr>
+              <tr><td>chart-column</td><td>—</td></tr>
+              <tr><td>trash-2</td><td>—</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:12px;color:var(--c-text-muted);margin:8px 0 16px;">No text labels on mobile · char count: 11 px Light · right-aligned</p>
+
+          <h3>Mobile Artifact Pill</h3>
+          <table class="spec-table" style="border:1px solid var(--c-border);border-radius:8px;overflow:hidden;">
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Size</td><td>104 × 48 px</td></tr>
+              <tr><td>Background</td><td><code>linear-gradient(155deg, #005071, #0099CC)</code></td></tr>
+              <tr><td>Border radius</td><td>24 px</td></tr>
+              <tr><td>Label</td><td>"Artifact" · 13 px Bold · white</td></tr>
+              <tr><td>Position</td><td><code>position: absolute; bottom: 34px; right: 16px</code></td></tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── COMPONENTS ── -->
+    <section class="section" id="components">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2>Component Inventory</h2>
+      </div>
+      <div class="component-grid">
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:var(--c-tag-bg)">🖼️</div>
+          <div>
+            <div class="comp-name">App Header</div>
+            <div class="comp-frames">All desktop frames</div>
+            <div class="comp-note">White bg · logo · zoom · icons · avatar</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:rgba(0,80,113,0.08)">🃏</div>
+          <div>
+            <div class="comp-name">Prompt Card</div>
+            <div class="comp-frames">Frames 01, 02</div>
+            <div class="comp-note">379×50 px desktop · full-width mobile</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:rgba(0,80,113,0.08)">💬</div>
+          <div>
+            <div class="comp-name">Chat Input</div>
+            <div class="comp-frames">All frames</div>
+            <div class="comp-note">Toolbar labels on desktop only</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:linear-gradient(155deg,#005071,#0099CC)">🚀</div>
+          <div>
+            <div class="comp-name">Artifact Pill</div>
+            <div class="comp-frames">All frames</div>
+            <div class="comp-note">Same gradient · enhanced shadow when expanded</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">⚡</div>
+          <div>
+            <div class="comp-name">Artifact Action Menu</div>
+            <div class="comp-frames">Frame 02</div>
+            <div class="comp-note">4 gradient circles · white label pills</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:#005071">💬</div>
+          <div>
+            <div class="comp-name">User Message Bubble</div>
+            <div class="comp-frames">Frames 03, 04</div>
+            <div class="comp-note">#005071 bg · 12/12/4/12 px radius</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:var(--c-tag-bg)">⏳</div>
+          <div>
+            <div class="comp-name">AI Loading Card</div>
+            <div class="comp-frames">Frame 03</div>
+            <div class="comp-note">Dots · progress bar · skeleton lines</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:var(--c-tag-bg)">🤖</div>
+          <div>
+            <div class="comp-name">AI Response Bubble</div>
+            <div class="comp-frames">Frame 04</div>
+            <div class="comp-note">White bg · action row below content</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:var(--c-tag-bg)">📋</div>
+          <div>
+            <div class="comp-name">Product Nav Sidebar</div>
+            <div class="comp-frames">Frame 05</div>
+            <div class="comp-note">Overlay + panel · 5 nav cards</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:#005071">KG</div>
+          <div>
+            <div class="comp-name">User Avatar</div>
+            <div class="comp-frames">All frames</div>
+            <div class="comp-note">28 px · #005071 · "KG" · 14 px radius</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:linear-gradient(135deg,#005071,#0088b3)">✦</div>
+          <div>
+            <div class="comp-name">AI Avatar</div>
+            <div class="comp-frames">Frames 03, 04</div>
+            <div class="comp-note">28 px · brand gradient · spark icon</div>
+          </div>
+        </div>
+        <div class="comp-pill">
+          <div class="comp-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">⬡</div>
+          <div>
+            <div class="comp-name">Nav Card</div>
+            <div class="comp-frames">Frame 05</div>
+            <div class="comp-note">287 px · icon badge · title · subtitle · arrow</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── INTERACTIONS ── -->
+    <section class="section" id="interactions">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2>Interaction Notes</h2>
+      </div>
+      <div class="interaction-grid">
+
+        <div class="interaction-card">
+          <div class="interaction-title">Artifact Pill <span class="badge">hover / expand</span></div>
+          <div class="state-row">
+            <span class="state-label">Default</span>
+            <span class="state-value">0px 4px 12px rgba(0,80,113,0.35)</span>
+          </div>
+          <div class="state-row">
+            <span class="state-label">Expanded</span>
+            <span class="state-value">0px 8px 24px rgba(0,80,113,0.5), 0px 2px 6px rgba(0,80,113,0.22) + action menu appears</span>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">Deep Thinking Toggle <span class="badge">toggle</span></div>
+          <div class="state-row">
+            <span class="state-label">Off</span>
+            <span class="state-value">Plain icon · no background</span>
+          </div>
+          <div class="state-row">
+            <span class="state-label">On</span>
+            <span class="state-value">bg: #e5eef2 · dot: #005071 below icon</span>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">AI Loading Card <span class="badge">animation</span></div>
+          <div class="state-row">
+            <span class="state-label">Dots</span>
+            <span class="state-value">3 × pulse, staggered 0.2s delay</span>
+          </div>
+          <div class="state-row">
+            <span class="state-label">Progress</span>
+            <span class="state-value">Animate left→right, loops at 100%</span>
+          </div>
+          <div class="state-row">
+            <span class="state-label">Skeleton</span>
+            <span class="state-value">Shimmer: opacity 0.12→0.2→0.12</span>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">Product Sidebar <span class="badge">overlay</span></div>
+          <div class="state-row">
+            <span class="state-label">Open</span>
+            <span class="state-value">Slide-in from right + overlay fade-in</span>
+          </div>
+          <div class="state-row">
+            <span class="state-label">Overlay</span>
+            <span class="state-value">rgba(13,31,39,0.1) + blur(1px)</span>
+          </div>
+          <div class="state-row">
+            <span class="state-label">Close</span>
+            <span class="state-value">✕ button or click outside overlay</span>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">Card Hover States <span class="badge">hover</span></div>
+          <div class="state-row">
+            <span class="state-label">Border</span>
+            <span class="state-value">rgba(0,80,113,0.2)</span>
+          </div>
+          <div class="state-row">
+            <span class="state-label">Shadow</span>
+            <span class="state-value">0px 2px 8px rgba(0,80,113,0.08)</span>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">AI Action Buttons <span class="badge">hover</span></div>
+          <div class="state-row">
+            <span class="state-label">Default</span>
+            <span class="state-value">rgba(13,31,39,0.4) icon fill</span>
+          </div>
+          <div class="state-row">
+            <span class="state-label">Hover</span>
+            <span class="state-value">bg: rgba(0,80,113,0.08) · icon: #005071</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div style="border-top:1px solid var(--c-border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div style="font-size:12px;color:var(--c-text-subtle);">
+        LifePROAssist.AI · Design Handoff · Figma <code style="font-size:11px;font-family:monospace;background:var(--c-code-bg);padding:1px 5px;border-radius:4px;">8ZaovNEs0AMxJDUsGuknzB</code>
+      </div>
+      <div style="font-size:12px;color:var(--c-text-subtle);">2026-09-17 · Karthik G</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Highlight active nav link on scroll
+  const links = document.querySelectorAll('.nav-link[href^="#"]');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = [...links].find(l => l.getAttribute('href') === '#' + e.target.id);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => obs.observe(s));
+</script>
